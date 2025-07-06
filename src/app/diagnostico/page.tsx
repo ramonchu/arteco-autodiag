@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 
@@ -23,11 +23,11 @@ function DiagnosticWizard() {
 
   const handleAnswerChange = (questionId: string, value: string) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
-  };
 
-  const handleNext = () => {
     if (currentStep < questions.length - 1) {
-      setCurrentStep(currentStep + 1);
+      setTimeout(() => {
+        setCurrentStep((prevStep) => prevStep + 1);
+      }, 300); // Short delay for better UX
     }
   };
 
@@ -97,7 +97,7 @@ function DiagnosticWizard() {
             <Button type="button" variant="outline" onClick={handlePrev} disabled={currentStep === 0 || isPending}>
               <ArrowLeft className="mr-2 h-4 w-4" /> Anterior
             </Button>
-            {isLastStep ? (
+            {isLastStep && (
               <Button type="submit" disabled={!answers[currentQuestion.id] || isPending} className="bg-accent hover:bg-accent/90">
                 {isPending ? (
                   <>
@@ -106,10 +106,6 @@ function DiagnosticWizard() {
                 ) : (
                   "Enviar resultados para análisis"
                 )}
-              </Button>
-            ) : (
-              <Button type="button" onClick={handleNext} disabled={!answers[currentQuestion.id] || isPending}>
-                Siguiente <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             )}
           </CardFooter>
