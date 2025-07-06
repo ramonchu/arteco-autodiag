@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { CheckCircle, Lightbulb, AlertTriangle } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { generateRecommendations } from "@/lib/recommendations";
 
 interface GraciasPageProps {
   searchParams: {
@@ -27,6 +28,20 @@ function GraciasContent({
   insight?: string;
   error?: string;
 }) {
+  const parsed = insight ? JSON.parse(decodeURIComponent(insight)) : null;
+  const recommendations = parsed ? generateRecommendations(parsed.answers) : [];
+
+  const handleDownload = async () => {
+    if (!insight) return;
+    const res = await fetch(`/api/pdf?insight=${encodeURIComponent(insight)}`);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'diagnostico.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-6">
       <div className="absolute top-6 left-6">
@@ -61,8 +76,8 @@ function GraciasContent({
                 </div>
               </div>
             ) : (
-              insight && (
-                <div className="bg-primary/10 border border-primary/20 p-6 rounded-lg text-left">
+              parsed && (
+                <div className="bg-primary/10 border border-primary/20 p-6 rounded-lg text-left space-y-4">
                   <div className="flex items-center gap-3 mb-3">
                     <Lightbulb className="h-6 w-6 text-primary" />
                     <h3 className="text-xl font-semibold text-primary">
@@ -70,8 +85,14 @@ function GraciasContent({
                     </h3>
                   </div>
                   <p className="text-muted-foreground">
-                    {decodeURIComponent(insight)}
+                    Hemos analizado tus respuestas. Estas son algunas recomendaciones iniciales:
                   </p>
+                  <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
+                    {recommendations.map((rec) => (
+                      <li key={rec}>{rec}</li>
+                    ))}
+                  </ul>
+                  <Button onClick={handleDownload} className="mt-4">Descargar PDF detallado</Button>
                 </div>
               )
             )}
