@@ -87,7 +87,7 @@ function DiagnosticWizard() {
             
             {/* Hidden UTM fields */}
             <input type="hidden" name="utm_source" value={searchParams.get("utm_source") || ""} />
-            <input type="hidden"name="utm_medium" value={searchParams.get("utm_medium") || "" } />
+            <input type="hidden" name="utm_medium" value={searchParams.get("utm_medium") || "" } />
             <input type="hidden" name="utm_campaign" value={searchParams.get("utm_campaign") || ""} />
             <input type="hidden" name="utm_term" value={searchParams.get("utm_term") || ""} />
             <input type="hidden" name="utm_content" value={searchParams.get("utm_content") || ""} />
