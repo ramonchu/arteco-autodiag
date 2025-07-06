@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import PDFDocument from 'pdfkit';
+import PDFDocument from 'pdfkit/js/pdfkit.standalone.js';
 import { generateRecommendations, Answers } from '@/lib/recommendations';
 import { questions } from '@/app/diagnostico/questions';
 

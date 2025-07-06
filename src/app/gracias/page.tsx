@@ -73,7 +73,7 @@ function GraciasContent() {
                   <div className="flex items-center gap-3 mb-3">
                     <Lightbulb className="h-6 w-6 text-primary" />
                     <h3 className="text-xl font-semibold text-primary">
-                      Tu Insight Accionable
+                      Descarga tu informe
                     </h3>
                   </div>
                   <p className="text-muted-foreground">
