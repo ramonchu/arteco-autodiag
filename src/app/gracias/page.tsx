@@ -1,7 +1,9 @@
 // src/app/gracias/page.tsx
+"use client";
 
 import { Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,20 +16,10 @@ import { CheckCircle, Lightbulb, AlertTriangle } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { generateRecommendations } from "@/lib/recommendations";
 
-interface GraciasPageProps {
-  searchParams: {
-    insight?: string;
-    error?: string;
-  };
-}
-
-function GraciasContent({
-  insight,
-  error,
-}: {
-  insight?: string;
-  error?: string;
-}) {
+function GraciasContent() {
+  const searchParams = useSearchParams();
+  const insight = searchParams.get("insight") ?? undefined;
+  const error = searchParams.get("error") ?? undefined;
   const parsed = insight ? JSON.parse(decodeURIComponent(insight)) : null;
   const recommendations = parsed ? generateRecommendations(parsed.answers) : [];
 
@@ -106,12 +98,10 @@ function GraciasContent({
   );
 }
 
-// 👇 Hacemos async el componente de página
-export default async function GraciasPage({ searchParams }: GraciasPageProps) {
-  const {insight, error } = await searchParams;
+export default function GraciasPage() {
   return (
     <Suspense fallback={<div>Cargando...</div>}>
-      <GraciasContent insight={insight} error={error} />
+      <GraciasContent />
     </Suspense>
   );
 }
