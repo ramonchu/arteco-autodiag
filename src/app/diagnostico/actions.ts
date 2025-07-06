@@ -27,19 +27,18 @@ export async function submitDiagnosis(formData: FormData) {
     }
   }
 
+  const objectArgs: any = {
+    answers,
+    utmParams,
+  };
+
+  // Redirect to thank you page with the insight
   try {
-
-    const objectArgs: any = {
-      answers,
-      utmParams
-    };
-
-    // Redirect to thank you page with the insight
     redirect(`/gracias?insight=${encodeURIComponent(JSON.stringify(objectArgs))}`);
-
-  } catch (error) {
+  } catch (error: any) {
+    // Rethrow Next.js redirect errors so the framework can handle them
+    if (error?.digest?.startsWith("NEXT_REDIRECT")) throw error;
     console.error("Error submitting diagnosis:", error);
-    // Redirect to a generic thank you page if anything fails
     redirect("/gracias?error=true");
   }
 }
