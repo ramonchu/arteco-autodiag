@@ -3,6 +3,7 @@
 
 import { redirect } from "next/navigation";
 import { questions } from "./questions";
+import { pool } from "@/lib/db";
 
 
 
@@ -28,11 +29,26 @@ export async function submitDiagnosis(formData: FormData) {
   }
 
   try {
-
     const objectArgs: any = {
       answers,
-      utmParams
+      utmParams,
     };
+
+    // Save results only for users coming from apollo.io
+    if (utmParams.utm_source?.includes("apollo.io")) {
+      await pool.query(
+        `CREATE TABLE IF NOT EXISTS diagnostics (
+          id SERIAL PRIMARY KEY,
+          created_at TIMESTAMPTZ DEFAULT now(),
+          answers JSONB,
+          utm_params JSONB
+        )`
+      );
+      await pool.query(
+        "INSERT INTO diagnostics (answers, utm_params) VALUES ($1, $2)",
+        [answers, utmParams]
+      );
+    }
 
     // Redirect to thank you page with the insight
     redirect(`/gracias?insight=${encodeURIComponent(JSON.stringify(objectArgs))}`);
