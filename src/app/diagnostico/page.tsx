@@ -92,6 +92,13 @@ function DiagnosticWizard() {
             <input type="hidden" name="utm_term" value={searchParams.get("utm_term") || ""} />
             <input type="hidden" name="utm_content" value={searchParams.get("utm_content") || ""} />
 
+            {/* Hidden fields for previous answers */}
+            {Object.entries(answers).map(([id, value]) => (
+              id !== currentQuestion.id ? (
+                <input key={`hidden-${id}`} type="hidden" name={id} value={value} />
+              ) : null
+            ))}
+
           </CardContent>
           <CardFooter className="flex justify-between border-t pt-6">
             <Button type="button" variant="outline" onClick={handlePrev} disabled={currentStep === 0 || isPending}>

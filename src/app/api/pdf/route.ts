@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import PDFDocument from 'pdfkit';
 import { generateRecommendations, Answers } from '@/lib/recommendations';
+import { questions } from '@/app/diagnostico/questions';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -25,8 +26,11 @@ export async function GET(request: NextRequest) {
   doc.fontSize(20).text('Resultados del Diagnóstico', { align: 'center' });
   doc.moveDown();
 
-  Object.entries(data.answers).forEach(([question, answer]) => {
-    doc.fontSize(12).text(`${question}: ${answer}`);
+  const questionMap = new Map(questions.map((q) => [q.id, q.question]));
+
+  Object.entries(data.answers).forEach(([id, answer]) => {
+    const questionText = questionMap.get(id) || id;
+    doc.fontSize(12).text(`${questionText}: ${answer}`);
   });
 
   doc.moveDown();

@@ -17,14 +17,11 @@ export async function submitDiagnosis(formData: FormData) {
     utm_content: formData.get("utm_content")?.toString(),
   };
 
-  const questionMap = new Map(questions.map((q) => [q.id, q.question]));
+  const questionIds = new Set(questions.map((q) => q.id));
 
   for (const [key, value] of formData.entries()) {
-    if (questionMap.has(key)) {
-      const questionText = questionMap.get(key);
-      if (questionText) {
-        answers[questionText] = value.toString();
-      }
+    if (questionIds.has(key)) {
+      answers[key] = value.toString();
     }
   }
 
